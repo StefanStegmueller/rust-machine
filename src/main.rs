@@ -11,7 +11,7 @@ fn main() {
 
     let contents = fs::read_to_string(file_path).expect("Something went wrong reading the file");
 
-    let instructions = parse_instructions(&contents); 
+    let instructions = parse_instructions(&contents);
     print_instructions(instructions);
 }
 
@@ -32,18 +32,38 @@ fn get_args() -> String {
 }
 
 fn parse_instructions(contents: &str) -> Vec<Instruction> {
-    contents
+    let errmsg_std = |c| format!("\nParsing error in line {}:\n", c + 1);
+    let err = |c, m| panic!("{}{}", errmsg_std(c), m);
+
+    let instructions = contents
         .split('\n')
         .filter(|i| !i.is_empty())
         .map(|i| i.trim().split(' ').collect::<Vec<&str>>())
-        .map(|i| Instruction {
-            state: i[0],
-            read: i[1],
-            write: i[2],
-            step: Step::from_str(i[3]).unwrap(),
-            next: i[4],
+        .enumerate()
+        .map(|(c, i)| {
+            if i.len() < 5 {
+                err(c, "Too little symbols for an instruction.");
+            }
+
+            if i.len() > 5 {
+                err(c, "Too much symbols for an instruction.");
+            }
+
+            Instruction {
+                state: i[0],
+                read: i[1],
+                write: i[2],
+                step: Step::from_str(i[3]).expect(&format!(
+                    "{}{}",
+                    errmsg_std(c),
+                    "Symbol for step direction has to be either L or R."
+                )),
+                next: i[4],
+            }
         })
-        .collect::<Vec<Instruction>>()
+        .collect::<Vec<Instruction>>();
+
+    instructions
 }
 
 fn print_instructions(instructions: Vec<Instruction>) {
