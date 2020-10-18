@@ -35,33 +35,46 @@ fn parse_instructions(contents: &str) -> Vec<Instruction> {
     let errmsg_std = |c| format!("\nParsing error in line {}:\n", c + 1);
     let err = |c, m| panic!("{}{}", errmsg_std(c), m);
 
+    const STATE: usize = 0;
+    const READ: usize = 1;
+    const WRITE: usize = 2;
+    const STEP: usize = 3;
+    const NEXT: usize = 4;
+
     let instructions = contents
         .split('\n')
         .filter(|i| !i.is_empty())
         .map(|i| i.trim().split(' ').collect::<Vec<&str>>())
         .enumerate()
         .map(|(c, i)| {
-            if i.len() < 5 {
-                err(c, "Too little symbols for an instruction.");
-            }
-
-            if i.len() > 5 {
-                err(c, "Too much symbols for an instruction.");
+            if i.len() != 5 {
+                err(c, "An instructions is expected to have 5 tokens.");
             }
 
             Instruction {
-                state: i[0],
-                read: i[1],
-                write: i[2],
-                step: Step::from_str(i[3]).expect(&format!(
-                    "{}{}",
-                    errmsg_std(c),
-                    "Symbol for step direction has to be either L or R."
-                )),
-                next: i[4],
+                state: i[STATE],
+                read: i[READ],
+                write: i[WRITE],
+                step: Step::from_str(i[STEP]).unwrap_or_else(|_| {
+                    err(c, "Token for step direction has to be either L or R.")
+                }),
+                next: i[NEXT],
             }
         })
         .collect::<Vec<Instruction>>();
+
+    // check for ambiguous instructions
+    let mut unique_instructions: Vec<&Instruction> = vec![];
+    for (c, i) in instructions.iter().enumerate() {
+        if !unique_instructions
+            .iter()
+            .any(|&ui| ui.state == i.state && ui.read == i.read)
+        {
+            unique_instructions.push(i);
+        } else {
+            err(c, "This instruction is ambiguous. Another instructions includes the same state and read token.");
+        }
+    }
 
     instructions
 }
