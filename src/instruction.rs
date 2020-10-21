@@ -1,7 +1,8 @@
+use std::fmt;
 use std::str::FromStr;
 
-type State<'a> = &'a str;
-type Symbol<'a> = &'a str;
+pub type State = String;
+pub type Symbol = char;
 
 #[derive(Debug)]
 pub enum Step {
@@ -21,11 +22,30 @@ impl FromStr for Step {
     }
 }
 
+impl fmt::Display for Step {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Step::L => write!(f, "L"),
+            Step::R => write!(f, "R"),
+        }
+    }
+}
+
 #[derive(Debug)]
-pub struct Instruction<'a> {
-    pub state: State<'a>,
-    pub read: Symbol<'a>,
-    pub write: Symbol<'a>,
+pub struct Instruction {
+    pub state: State,
+    pub read: Symbol,
+    pub write: Symbol,
     pub step: Step,
-    pub next: State<'a>,
+    pub next: State,
+}
+
+impl fmt::Display for Instruction {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "{}\t{}\t{}\t{}\t{}",
+            self.state, self.read, self.write, self.step, self.next
+        )
+    }
 }

@@ -1,10 +1,13 @@
 mod instruction;
+mod machine;
 
 use clap::{App, Arg};
 use std::fs;
+use std::io;
 use std::str::FromStr;
 
 use crate::instruction::{Instruction, Step};
+use crate::machine::Machine;
 
 fn main() {
     let file_path = get_args();
@@ -12,7 +15,28 @@ fn main() {
     let contents = fs::read_to_string(file_path).expect("Something went wrong reading the file");
 
     let instructions = parse_instructions(&contents);
-    print_instructions(instructions);
+    print_seperator();
+    print_instructions(&instructions);
+    print_seperator();
+
+    println!("Enter initial tape:");
+    let mut tape = String::new();
+    io::stdin().read_line(&mut tape).unwrap();
+    tape = tape.trim().to_string();
+
+    println!("Enter initial state:");
+    let mut state = String::new();
+    io::stdin().read_line(&mut state).unwrap();
+    state = state.trim().to_string();
+
+    let mut machine = Machine::new(state, instructions, tape.chars().collect());
+
+    print_seperator();
+    println!("START");
+    while machine.next() {
+        machine.print_tape();
+        let _ = io::stdin().read_line(&mut "".to_string()).unwrap();
+    }
 }
 
 fn get_args() -> String {
@@ -51,14 +75,25 @@ fn parse_instructions(contents: &str) -> Vec<Instruction> {
                 err(c, "An instructions is expected to have 5 tokens.");
             }
 
+            let r: Vec<char> = i[READ].chars().collect();
+            let w: Vec<char> = i[WRITE].chars().collect();
+
+            if r.len() > 1 || w.len() > 1 {
+                err(
+                    c,
+                    "A read or write token is expected to have a length of 1.",
+                )
+            }
+
             Instruction {
-                state: i[STATE],
-                read: i[READ],
-                write: i[WRITE],
+                state: i[STATE].to_string(),
+                read: r[0],
+                write: w[0],
                 step: Step::from_str(i[STEP]).unwrap_or_else(|_| {
-                    err(c, "Token for step direction has to be either L or R.")
+                    err(c, "Token for step direction has to be either L or R.");
+                    Step::L
                 }),
-                next: i[NEXT],
+                next: i[NEXT].to_string(),
             }
         })
         .collect::<Vec<Instruction>>();
@@ -79,8 +114,14 @@ fn parse_instructions(contents: &str) -> Vec<Instruction> {
     instructions
 }
 
-fn print_instructions(instructions: Vec<Instruction>) {
+fn print_seperator() {
+    println!("------------------------------------");
+}
+
+fn print_instructions(instructions: &Vec<Instruction>) {
+    println!("INSTRUCTIONS");
+    println!("STATE\tREAD\tWRITE\tSTEP\tNEXT");
     for ins in instructions {
-        println!("{:?}", ins);
+        println!("{}", ins);
     }
 }
