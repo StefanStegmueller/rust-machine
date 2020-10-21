@@ -25,14 +25,14 @@ impl Machine {
                     Step::L => {
                         self.head = self.head - 1;
                         if self.head == -1 {
-                            self.tape.insert(0, 'B');
+                            self.tape.insert(0, '0');
                             self.head = 0;
                         }
                     }
                     Step::R => {
                         self.head = self.head + 1;
                         if self.head as usize >= self.tape.len() {
-                            self.tape.push('B');
+                            self.tape.push('0');
                         }
                     }
                 }
@@ -43,9 +43,13 @@ impl Machine {
         false
     }
 
-    pub fn print_tape(&mut self) {
-        let s: String = self.tape.iter().collect();
-        println!("{}", s);
+    pub fn print(&mut self) {
+        let to_string = |vc: &Vec<char>| vc.iter().collect::<String>();
+        let mut head: Vec<char> = vec![' ';self.tape.len()]; 
+        head.insert(self.head as usize, '^');
+        head.pop();
+        println!("({})\t{}", self.state, to_string(&self.tape));
+        println!("\t{}", to_string(&head));
     }
 
     fn read(&self) -> &char {

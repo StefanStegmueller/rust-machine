@@ -32,10 +32,11 @@ fn main() {
     let mut machine = Machine::new(state, instructions, tape.chars().collect());
 
     print_seperator();
-    println!("START");
-    while machine.next() {
-        machine.print_tape();
-        let _ = io::stdin().read_line(&mut "".to_string()).unwrap();
+    println!("STATE\tTAPE");
+    loop {
+        machine.print();
+        io::stdin().read_line(&mut "".to_string()).unwrap();
+        if !machine.next() { break; }
     }
 }
 
