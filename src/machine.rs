@@ -45,7 +45,7 @@ impl Machine {
 
     pub fn print(&mut self) {
         let to_string = |vc: &Vec<char>| vc.iter().collect::<String>();
-        let mut head: Vec<char> = vec![' ';self.tape.len()]; 
+        let mut head: Vec<char> = vec![' '; self.tape.len()];
         head.insert(self.head as usize, '^');
         head.pop();
         println!("({})\t{}", self.state, to_string(&self.tape));

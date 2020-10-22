@@ -3,8 +3,13 @@ use std::str::FromStr;
 use crate::instruction::{Instruction, Step};
 
 pub fn parse_instructions(contents: &str) -> Vec<Instruction> {
-    let errmsg_std = |c| format!("\nParsing error in line {}:\n", c + 1);
-    let err = |c, m| panic!("{}{}", errmsg_std(c), m);
+    let errmsg_std = |c| {
+        format!(
+            "\n\nParsing error for Turing machine program in line {}:\n",
+            c + 1
+        )
+    };
+    let err = |c, m| panic!("{}{}\n\n", errmsg_std(c), m);
 
     const STATE: usize = 0;
     const READ: usize = 1;
@@ -19,7 +24,7 @@ pub fn parse_instructions(contents: &str) -> Vec<Instruction> {
         .enumerate()
         .map(|(c, i)| {
             if i.len() != 5 {
-                err(c, "An instructions is expected to have 5 tokens.");
+                err(c, "A instructions is expected to have 5 tokens.");
             }
 
             let r: Vec<char> = i[READ].chars().collect();

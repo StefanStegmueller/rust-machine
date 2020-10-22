@@ -1,18 +1,17 @@
-mod parser;
 mod instruction;
 mod machine;
+mod parser;
 
 use clap::{App, Arg};
 use std::fs;
 use std::io;
 
-use crate::parser::parse_instructions;
 use crate::instruction::Instruction;
 use crate::machine::Machine;
+use crate::parser::parse_instructions;
 
 fn main() {
     let file_path = get_args();
-
     let contents = fs::read_to_string(file_path).expect("Something went wrong reading the file");
 
     let instructions = parse_instructions(&contents);
@@ -37,7 +36,9 @@ fn main() {
     loop {
         machine.print();
         io::stdin().read_line(&mut "".to_string()).unwrap();
-        if !machine.next() { break; }
+        if !machine.next() {
+            break;
+        }
     }
 }
 
