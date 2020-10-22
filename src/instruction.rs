@@ -8,6 +8,7 @@ pub type Symbol = char;
 pub enum Step {
     L,
     R,
+    N,
 }
 
 impl FromStr for Step {
@@ -17,6 +18,7 @@ impl FromStr for Step {
         match input {
             "L" => Ok(Step::L),
             "R" => Ok(Step::R),
+            "N" => Ok(Step::N),
             _ => Err(()),
         }
     }
@@ -27,6 +29,7 @@ impl fmt::Display for Step {
         match self {
             Step::L => write!(f, "L"),
             Step::R => write!(f, "R"),
+            Step::N => write!(f, "N"),
         }
     }
 }

@@ -43,6 +43,7 @@ impl Machine {
                             self.tape.push(self.blank);
                         }
                     }
+                    Step::N => {}
                 }
                 self.state = i.next.clone();
                 return true;
