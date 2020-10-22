@@ -19,7 +19,7 @@ pub fn parse_instructions(contents: &str) -> Vec<Instruction> {
 
     let instructions = contents
         .split('\n')
-        .filter(|i| !i.is_empty())
+        .filter(|i| !i.is_empty() && !(i.trim().chars().nth(0).unwrap() == ';'))
         .map(|i| i.trim().split(' ').collect::<Vec<&str>>())
         .enumerate()
         .map(|(c, i)| {

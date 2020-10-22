@@ -74,7 +74,7 @@ fn ask_params() -> (Vec<char>, String, char, i32) {
     let mut blank = String::new();
     io::stdin().read_line(&mut blank).unwrap();
     let c_blank: char = blank.trim().to_string().chars().collect::<Vec<char>>()[0];
-    
+
     println!("Enter initial head position:");
     let mut head_index = String::new();
     io::stdin().read_line(&mut head_index).unwrap();
