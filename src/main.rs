@@ -11,7 +11,7 @@ use crate::machine::Machine;
 use crate::parser::parse_instructions;
 
 fn main() {
-    let file_path = get_args();
+    let (file_path, _break) = collect_args();
     let contents = fs::read_to_string(file_path).expect("Something went wrong reading the file");
 
     let instructions = parse_instructions(&contents);
@@ -26,14 +26,16 @@ fn main() {
     println!("STATE\tTAPE");
     loop {
         machine.print();
-        io::stdin().read_line(&mut "".to_string()).unwrap();
+        if _break {
+            io::stdin().read_line(&mut "".to_string()).unwrap();
+        }
         if !machine.next() {
             break;
         }
     }
 }
 
-fn get_args() -> String {
+fn collect_args() -> (String, bool) {
     let matches = App::new("rust-machine")
         .version(clap::crate_version!())
         .author(clap::crate_authors!())
@@ -42,11 +44,19 @@ fn get_args() -> String {
             Arg::with_name("PROGRAM_FILE")
                 .required(true)
                 .takes_value(true)
-                .help("Path to file that contains the turing machine progam"),
+                .help("Path to file that contains the Turing machine program"),
+        )
+        .arg(
+            Arg::with_name("break")
+                .short("b")
+                .long("break")
+                .takes_value(false)
+                .help("Flag to break execution after each step"),
         )
         .get_matches();
     let file_path = matches.value_of("PROGRAM_FILE").unwrap();
-    file_path.to_string()
+    let _break: bool = matches.is_present("break");
+    (file_path.to_string(), _break)
 }
 
 fn ask_params() -> (Vec<char>, String, char, i32) {
