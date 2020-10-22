@@ -3,16 +3,24 @@ use crate::instruction::{Instruction, State, Step};
 pub struct Machine {
     tape: Vec<char>,
     state: State,
+    blank: char,
     head: i32,
     program: Vec<Instruction>,
 }
 
 impl Machine {
-    pub fn new(initial_state: State, program: Vec<Instruction>, tape: Vec<char>) -> Self {
+    pub fn new(
+        initial_state: State,
+        blank: char,
+        head: i32,
+        program: Vec<Instruction>,
+        tape: Vec<char>,
+    ) -> Self {
         Self {
             tape,
             state: initial_state,
-            head: 0,
+            blank,
+            head,
             program,
         }
     }
@@ -25,14 +33,14 @@ impl Machine {
                     Step::L => {
                         self.head = self.head - 1;
                         if self.head == -1 {
-                            self.tape.insert(0, '0');
+                            self.tape.insert(0, self.blank);
                             self.head = 0;
                         }
                     }
                     Step::R => {
                         self.head = self.head + 1;
                         if self.head as usize >= self.tape.len() {
-                            self.tape.push('0');
+                            self.tape.push(self.blank);
                         }
                     }
                 }
