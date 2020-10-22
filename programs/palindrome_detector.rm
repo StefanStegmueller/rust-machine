@@ -1,0 +1,30 @@
+; Detects a palindrome consisting of 0 and 1
+; If input is a palindrome the program outputs 1 otherwise 0
+
+S0 B B L S1
+S0 0 0 R S0
+S0 1 1 R S0
+
+S1 B 1 N H
+S1 0 B L S2
+S1 1 B L S4
+
+S2 B B L S3
+S2 0 0 L S2
+S2 1 1 L S2
+
+S3 B B N S0
+S3 0 B R S0
+S3 1 1 N S6
+
+S4 B B R S5
+S4 0 0 L S4
+S4 1 1 L S4
+
+S5 B B N S0
+S5 0 0 N S6
+S5 1 B R S0
+
+S6 B 0 N H
+S6 0 B R S6
+S6 1 B R S6

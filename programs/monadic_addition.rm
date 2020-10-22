@@ -1,0 +1,10 @@
+; add numbers represented by as many symbols as their value 
+
+A 1 1 R A
+A + 1 R B
+
+B 0 0 L C
+B 1 1 R B
+
+C 0 0 N H
+C 1 0 R C

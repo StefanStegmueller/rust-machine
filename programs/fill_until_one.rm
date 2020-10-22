@@ -1,0 +1,4 @@
+; Fills a tape with ones until it reads a 1
+
+FILL 0 1 R FILL
+FILL 1 1 R HALT

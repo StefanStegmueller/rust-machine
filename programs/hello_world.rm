@@ -1,0 +1,23 @@
+; Prints HELLO0WORLD
+
+A 0 H R B
+
+B 0 E R C
+
+C 0 L R D
+
+D 0 L R E
+
+E 0 O R F
+
+F 0 0 R G
+
+G 0 W R H
+
+H 0 O R I
+
+I 0 R R J
+
+J 0 L R K
+
+K 0 D R L
